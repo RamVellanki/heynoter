@@ -1,5 +1,5 @@
 const { app, Menu } = require("electron")
-import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, SELECT_ALL_EVENT, SCRATCH_FILE_NAME } from '@/src/common/constants'
+import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, SELECT_ALL_EVENT, SCRATCH_FILE_NAME, TOGGLE_SIDEBAR_EVENT } from '@/src/common/constants'
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
@@ -53,6 +53,14 @@ const changeBufferMenuItem = {
     accelerator: 'CommandOrControl+P',
     click: (menuItem, window, event) => {
         window?.webContents.send(CHANGE_BUFFER_EVENT)
+    },
+}
+
+const toggleSidebarMenuItem = {
+    label: 'Toggle Sidebar',
+    accelerator: 'CommandOrControl+B',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(TOGGLE_SIDEBAR_EVENT)
     },
 }
 
@@ -148,6 +156,8 @@ const template = [
         label: 'View',
         submenu: [
             { role: 'reload' },
+            toggleSidebarMenuItem,
+            { type: 'separator' },
             { role: 'forceReload' },
             { role: 'toggleDevTools' },
             { type: 'separator' },

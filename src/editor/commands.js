@@ -41,7 +41,7 @@ import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel }
 import { insertDateAndTime } from "./date-time.js"
 import { foldBlock, unfoldBlock, toggleBlockFold } from "./fold-gutter.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
-import { useSettingsStore } from "../stores/settings-store.js"
+import { useSettingsStore } from "../stores/settings-store.js";
 import { toggleSpellcheck, enableSpellcheck, disableSpellcheck } from "./spell-check.js"
 import { insertIndentation } from "./indentation.js"
 import { toggleCheckbox } from "./todo-checkbox.ts"
@@ -71,6 +71,12 @@ const openMoveToBuffer = (editor) => () => {
 }
 const openCreateNewBuffer = (editor) => () => {
     useHeynoteStore().openCreateBuffer("new")
+    return true
+}
+
+const toggleSidebar = (editor) => () => {
+    const settingsStore = useSettingsStore()
+    settingsStore.setSidebarVisible(!settingsStore.sidebarVisible)
     return true
 }
 
@@ -167,6 +173,7 @@ const HEYNOTE_COMMANDS = {
     enableSpellcheck: cmd(enableSpellcheck, "Spellchecker", "Enable Spellchecking"),
     disableSpellcheck: cmd(disableSpellcheck, "Spellchecker", "Disable Spellchecking"),
     toggleAlwaysOnTop: cmd(toggleAlwaysOnTop, "Window", "Toggle Always on top"),
+    toggleSidebar: cmd(toggleSidebar, "View", "Toggle sidebar"),
 
     // commands without editor context
     paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),

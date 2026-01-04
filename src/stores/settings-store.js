@@ -12,6 +12,8 @@ export const useSettingsStore = defineStore("settings", {
             theme: window.heynote.themeMode.initial,
             spellcheckEnabled: window.heynote.settings.spellcheckEnabled === true,
             alwaysOnTop: window.heynote.settings.alwaysOnTop,
+            sidebarVisible: window.heynote.settings.sidebarVisible || false,
+            sidebarWidth: window.heynote.settings.sidebarWidth || 250,
         }
     },
 
@@ -44,6 +46,16 @@ export const useSettingsStore = defineStore("settings", {
         setTheme(theme) {
             window.heynote.themeMode.set(theme)
             this.themeSetting = theme
+        },
+
+        setSidebarVisible(visible) {
+            this.sidebarVisible = visible
+            this.updateSettings({ sidebarVisible: visible })
+        },
+
+        setSidebarWidth(width) {
+            this.sidebarWidth = width
+            this.updateSettings({ sidebarWidth: width })
         },
 
         setUp() {

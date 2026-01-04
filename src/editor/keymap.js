@@ -102,6 +102,7 @@ export const DEFAULT_KEYMAP = [
     cmd("Mod-Shift-p", "openCommandPalette"),
     cmd("Mod-s", "openMoveToBuffer"),
     cmd("Mod-n", "openCreateNewBuffer"),
+    cmd("Mod-b", "toggleSidebar"),
 
     cmd("Alt-Shift-f", "formatBlockContent"),
     cmd("Mod-Shift-Space", "toggleCheckbox"),
