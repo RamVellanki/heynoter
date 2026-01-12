@@ -178,9 +178,9 @@
 </script>
 
 <template>
-    <div>
+    <div class="editor-wrapper">
         <div class="editor" ref="editor" @contextmenu="onContextMenu"></div>
-        <div 
+        <div
             v-if="debugSyntaxTree"
             v-html="syntaxTreeDebugContent"
             class="debug-syntax-tree"
@@ -189,6 +189,16 @@
 </template>
 
 <style lang="sass">
+    .editor-wrapper
+        height: 100%
+        display: flex
+        flex-direction: column
+        position: relative
+
+        .editor
+            flex: 1
+            height: 100%
+
     .debug-syntax-tree
         position: absolute
         top: 0
