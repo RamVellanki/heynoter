@@ -7,7 +7,7 @@
     import { useSettingsStore } from "../stores/settings-store"
     import { useEditorCacheStore } from '../stores/editor-cache'
 
-    import { OPEN_SETTINGS_EVENT, MOVE_BLOCK_EVENT, CHANGE_BUFFER_EVENT } from '@/src/common/constants'
+    import { OPEN_SETTINGS_EVENT, MOVE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, TOGGLE_SIDEBAR_EVENT } from '@/src/common/constants'
 
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
@@ -18,6 +18,7 @@
     import NewBuffer from './NewBuffer.vue'
     import EditBuffer from './EditBuffer.vue'
     import TabBar from './tabs/TabBar.vue'
+    import Sidebar from './sidebar/Sidebar.vue'
 
     export default {
         components: {
@@ -30,6 +31,7 @@
             NewBuffer,
             EditBuffer,
             TabBar,
+            Sidebar,
         },
 
         data() {
@@ -76,6 +78,10 @@
                     this.deleteBuffer(tabPath)
                 }
                 this.focusEditor()
+            })
+
+            window.heynote.mainProcess.on(TOGGLE_SIDEBAR_EVENT, () => {
+                this.toggleSidebar()
             })
         },
 
@@ -149,6 +155,10 @@
                 "focusEditor",
             ]),
 
+            toggleSidebar() {
+                this.settingsStore.setSidebarVisible(!this.settingsStore.sidebarVisible)
+            },
+
             // Used as a watcher for the booleans that control the visibility of editor dialogs. 
             // When a dialog is closed, we want to focus the editor
             dialogWatcher(value) {
@@ -201,11 +211,13 @@
 
 <template>
     <TabBar v-if="showTabBar" />
-    <div 
-        class="container" 
+    <div
+        class="main-container"
         :class="{'tab-bar-visible':showTabBar}"
     >
-        <Editor 
+        <Sidebar v-if="settingsStore.sidebarVisible" />
+        <div class="editor-container">
+            <Editor 
             v-if="currentBufferPath"
             :theme="settingsStore.theme"
             :development="development"
@@ -214,18 +226,19 @@
             class="editor"
             ref="editor"
         />
-        <StatusBar 
-            :autoUpdate="settings.autoUpdate"
-            :allowBetaVersions="settings.allowBetaVersions"
-            @openBufferSelector="openBufferSelector"
-            @openLanguageSelector="openLanguageSelector"
-            @formatCurrentBlock="formatCurrentBlock"
-            @openSettings="showSettings = true"
-            @toggleSpellcheck="toggleSpellcheck"
-            @toggleAlwaysOnTop="toggleAlwaysOnTop"
-            @click="() => {$refs.editor.focus()}"
-            class="status" 
-        />
+            <StatusBar
+                :autoUpdate="settings.autoUpdate"
+                :allowBetaVersions="settings.allowBetaVersions"
+                @openBufferSelector="openBufferSelector"
+                @openLanguageSelector="openLanguageSelector"
+                @formatCurrentBlock="formatCurrentBlock"
+                @openSettings="showSettings = true"
+                @toggleSpellcheck="toggleSpellcheck"
+                @toggleAlwaysOnTop="toggleAlwaysOnTop"
+                @click="() => {$refs.editor.focus()}"
+                class="status"
+            />
+        </div>
         <div class="overlay">
             <LanguageSelector 
                 v-if="showLanguageSelector" 
@@ -268,16 +281,26 @@
 </template>
 
 <style scoped lang="sass">
-    .container
+    .main-container
+        display: flex
         width: 100%
         height: 100%
-        position: relative
         &.tab-bar-visible
             height: calc(100% - var(--tab-bar-height))
+
+    .editor-container
+        display: flex
+        flex-direction: column
+        flex: 1
+        position: relative
+        min-width: 0  // prevent flex overflow
+
         .editor
-            height: calc(100% - 21px)
+            flex: 1
+            height: auto  // remove calc, flex handles it
+
         .status
-            position: absolute
-            bottom: 0
-            left: 0
+            position: relative  // change from absolute
+            bottom: auto
+            left: auto
 </style>
