@@ -188,9 +188,9 @@
     </div>
 </template>
 
-<style lang="sass">
+<style lang="sass" scoped>
     .editor-wrapper
-        height: 100%
+        flex: 1
         display: flex
         flex-direction: column
         position: relative
